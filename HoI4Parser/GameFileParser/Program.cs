@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GameFileParser
+namespace HoI4Parser
 {
     class Program
     {

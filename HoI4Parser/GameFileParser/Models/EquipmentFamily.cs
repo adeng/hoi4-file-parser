@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameFileParser.Models
+namespace HoI4Parser.Models
 {
-    class EquipmentFamily : IParadoxRead
+    public class EquipmentFamily : IParadoxRead
     {
         public IList<LandEquipment> EquipmentList { get; set; }
 
@@ -31,17 +31,26 @@ namespace GameFileParser.Models
                 if(!EquipmentList[j].IsArchetype)
                 {
                     LandEquipment archetype = temp[EquipmentList[j].Archetype];
-                    EquipmentList[j].AirAttack = archetype.AirAttack;
-                    EquipmentList[j].APAttack = archetype.APAttack;
-                    EquipmentList[j].HardAttack = archetype.HardAttack;
-                    EquipmentList[j].SoftAttack = archetype.SoftAttack;
-                    EquipmentList[j].ArmorValue = archetype.ArmorValue;
-                    EquipmentList[j].Hardness = archetype.Hardness;
-                    EquipmentList[j].Breakthrough = archetype.Breakthrough;
-                    EquipmentList[j].Defense = archetype.Defense;
-                    EquipmentList[j].MaximumSpeed = archetype.MaximumSpeed;
-                    EquipmentList[j].Reliability = archetype.Reliability;
+                    EquipmentList[j].AirAttack = EquipmentList[j].AirAttack == 0 ? archetype.AirAttack : EquipmentList[j].AirAttack;
+                    EquipmentList[j].APAttack = EquipmentList[j].APAttack == 0 ? archetype.APAttack : EquipmentList[j].APAttack;
+                    EquipmentList[j].HardAttack = EquipmentList[j].HardAttack == 0 ? archetype.HardAttack : EquipmentList[j].HardAttack;
+                    EquipmentList[j].SoftAttack = EquipmentList[j].SoftAttack == 0 ? archetype.SoftAttack : EquipmentList[j].SoftAttack;
+                    EquipmentList[j].ArmorValue = EquipmentList[j].ArmorValue == 0 ? archetype.ArmorValue : EquipmentList[j].ArmorValue;
+                    EquipmentList[j].Hardness = EquipmentList[j].Hardness == 0 ? archetype.Hardness : EquipmentList[j].Hardness;
+                    EquipmentList[j].Breakthrough = EquipmentList[j].Breakthrough == 0 ? archetype.Breakthrough : EquipmentList[j].Breakthrough;
+                    EquipmentList[j].Defense = EquipmentList[j].Defense == 0 ? archetype.Defense : EquipmentList[j].Defense;
+                    EquipmentList[j].MaximumSpeed = EquipmentList[j].MaximumSpeed == 0 ? archetype.MaximumSpeed : EquipmentList[j].MaximumSpeed;
+                    EquipmentList[j].Reliability = EquipmentList[j].Reliability == 0 ? archetype.Reliability : EquipmentList[j].Reliability;
+                    EquipmentList[j].BuildCostIC = EquipmentList[j].BuildCostIC == 0 ? archetype.BuildCostIC : EquipmentList[j].BuildCostIC;
+                    
+                    if(EquipmentList[j].Type.Count == 0)
+                        EquipmentList[j].Type = archetype.Type;
                 }
+                //else
+                //{
+                //    // Remove archetypes since they aren't real
+                //    EquipmentList.Remove(EquipmentList[j]);
+                //}
             }
         }
     }

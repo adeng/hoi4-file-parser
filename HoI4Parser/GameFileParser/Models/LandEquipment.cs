@@ -3,15 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameFileParser.Models
+namespace HoI4Parser.Models
 {
-    class LandEquipment : IParadoxRead
+    public class LandEquipment : IParadoxRead
     {
         public string ID { get; set; }
         public int Year { get; set; }
         public bool IsArchetype { get; set; }
         public string Archetype { get; set; }
-        public string Type { get; set; }
+        public IList<string> Type { get; set; }
         public bool Active { get; set; }
         public double Reliability { get; set; }
         public double MaximumSpeed { get; set; }
@@ -23,7 +23,13 @@ namespace GameFileParser.Models
         public double HardAttack { get; set; }
         public double APAttack { get; set; }
         public double AirAttack { get; set; }
-        public double FuelConsumption { get; set; }
+        public double FuelConsumption { get; set; } 
+        public double BuildCostIC { get; set; }
+
+        public LandEquipment()
+        {
+            Type = new List<string>();
+        }
 
         public void TokenCallback(ParadoxParser parser, string token)
         {
@@ -39,7 +45,13 @@ namespace GameFileParser.Models
                     Archetype = parser.ReadString();
                     break;
                 case "type":
-                    Type = parser.ReadString();
+                    try
+                    {
+                        Type = parser.ReadStringList();
+                    } catch
+                    {
+                        Type.Add(parser.ReadString());
+                    }
                     break;
                 case "active":
                     Active = parser.ReadString() == "yes";
@@ -70,6 +82,9 @@ namespace GameFileParser.Models
                     break;
                 case "fuel_consumption":
                     FuelConsumption = parser.ReadDouble();
+                    break;
+                case "build_cost_ic":
+                    BuildCostIC = parser.ReadDouble();
                     break;
 
             }

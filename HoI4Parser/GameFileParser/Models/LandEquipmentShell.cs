@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameFileParser.Models
+namespace HoI4Parser.Models
 {
-    class LandEquipmentShell : IParadoxRead
+    public class LandEquipmentShell : IParadoxRead
     {
         public string NameId { get; set; }
         public IList<LandEquipment> StatisticsList { get; set; }
