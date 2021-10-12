@@ -170,9 +170,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\alber\\source\\repos\\HoI4Parser\\HoI4Parser\\GameFileParser\\GameFileParser.csproj",
-      "projectName": "GameFileParser",
-      "projectPath": "C:\\Users\\alber\\source\\repos\\HoI4Parser\\HoI4Parser\\GameFileParser\\GameFileParser.csproj",
+      "projectUniqueName": "C:\\Users\\alber\\source\\repos\\HoI4Parser\\HoI4Parser\\GameFileParser\\HoI4Parser.csproj",
+      "projectName": "HoI4Parser",
+      "projectPath": "C:\\Users\\alber\\source\\repos\\HoI4Parser\\HoI4Parser\\GameFileParser\\HoI4Parser.csproj",
       "packagesPath": "C:\\Users\\alber\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\alber\\source\\repos\\HoI4Parser\\HoI4Parser\\GameFileParser\\obj\\",
       "projectStyle": "PackageReference",

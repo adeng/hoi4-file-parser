@@ -16,7 +16,10 @@ namespace GameFileParser.Models
 
         public void TokenCallback(ParadoxParser parser, string token)
         {
-            EquipmentList.Add(parser.Parse(new LandEquipment()));
+            EquipmentList = parser.Parse(new LandEquipmentShell()).StatisticsList;
+
+            // Iterate through and fetch archetype information
+
         }
     }
 }
