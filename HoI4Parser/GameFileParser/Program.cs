@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HoI4Parser.Parsers;
+using System;
 
 namespace HoI4Parser
 {
@@ -6,19 +7,10 @@ namespace HoI4Parser
     {
         const string filepath = @"C:\Program Files (x86)\Steam\steamapps\common\Hearts of Iron IV";
 
-        private static void ParseCountries()
-        {
-
-        }
-
-        private static void ParseFocuses()
-        {
-
-        }
-
         static void Main(string[] args)
         {
-            EquipmentParser.LoadEquipment(filepath + @"\common\units\equipment");
+            UnitsParser.LoadEquipment(filepath + @"\common\units\equipment");
+            UnitsParser.LoadRegiments(filepath + @"\common\units");
         }
     }
 }

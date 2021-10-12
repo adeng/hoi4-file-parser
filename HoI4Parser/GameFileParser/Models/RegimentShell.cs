@@ -5,20 +5,20 @@ using System.Text;
 
 namespace HoI4Parser.Models
 {
-    public class LandEquipmentShell : IParadoxRead
+    public class RegimentShell : IParadoxRead
     {
-        public IList<LandEquipment> StatisticsList { get; set; }
+        public IList<Regiment> StatisticsList { get; set; }
 
-        public LandEquipmentShell()
+        public RegimentShell()
         {
-            StatisticsList = new List<LandEquipment>();
+            StatisticsList = new List<Regiment>();
         }
 
 
         public void TokenCallback(ParadoxParser parser, string token)
         {
             var id = token;
-            StatisticsList.Add(parser.Parse(new LandEquipment()));
+            StatisticsList.Add(parser.Parse(new Regiment()));
             StatisticsList[StatisticsList.Count - 1].ID = id;
         }
     }
