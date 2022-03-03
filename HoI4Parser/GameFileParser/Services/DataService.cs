@@ -13,41 +13,72 @@ namespace HoI4Parser.Services
         /// </summary>
         public static DataSet HoI4Set = new DataSet();
 
-        public static DataTable EquipmentTable = CreateDataTable("EquipmentTable", new List<string>
+        public static DataTable EquipmentTable = CreateDataTable("EquipmentTable", new List<Tuple<string, string>>
         {
-            "ID", "YEAR", "IS_ARCHETYPE", "ARCHETYPE", "TYPE", "ACTIVE", "RELIABILITY", "MAXIMUM_SPEED", "DEFENSE", "BREAKTHROUGH", "HARDNESS", "ARMOR_VALUE", "SOFT_ATTACK", "HARD_ATTACK", "AP_ATTACK", "AIR_ATTACK", "FUEL_CONSUMPTION", "BUILD_COST_IC"
-        }, new List<string>
-        {
-            "System.String", "System.Int32", "System.Boolean", "System.String", "System.String", "System.Boolean", "System.Double", "System.Double", "System.Double", "System.Double", "System.Double", "System.Double", "System.Double", "System.Double", "System.Double", "System.Double", "System.Double", "System.Double"
+            new Tuple<string, string>("ID", "System.String"),
+            new Tuple<string, string>("YEAR", "System.Int32"),
+            new Tuple<string, string>("IS_ARCHETYPE", "System.Boolean"),
+            new Tuple<string, string>("ARCHETYPE", "System.String"),
+            new Tuple<string, string>("TYPE", "System.String"),
+            new Tuple<string, string>("ACTIVE", "System.Boolean"),
+            new Tuple<string, string>("RELIABILITY", "System.Double"),
+            new Tuple<string, string>("MAXIMUM_SPEED", "System.Double"),
+            new Tuple<string, string>("DEFENSE", "System.Double"),
+            new Tuple<string, string>("BREAKTHROUGH", "System.Double"),
+            new Tuple<string, string>("HARDNESS", "System.Double"),
+            new Tuple<string, string>("ARMOR_VALUE", "System.Double"),
+            new Tuple<string, string>("SOFT_ATTACK", "System.Double"),
+            new Tuple<string, string>("HARD_ATTACK", "System.Double"),
+            new Tuple<string, string>("AP_ATTACK", "System.Double"),
+            new Tuple<string, string>("AIR_ATTACK", "System.Double"),
+            new Tuple<string, string>("FUEL_CONSUMPTION", "System.Double"),
+            new Tuple<string, string>("BUILD_COST_IC", "System.Double")
         });
 
-        public static DataTable RegimentTable = CreateDataTable("RegimentTable", new List<string>
+        public static DataTable RegimentTable = CreateDataTable("RegimentTable", new List<Tuple<string, string>>
         {
-            "ID", "PRIORITY", "ACTIVE", "AFFECTS_SPEED", "CAN_BE_PARACHUTED", "TYPE", "ENTRENCHMENT", "RECON", "GROUP", "COMBAT_WIDTH", "MANPOWER", "MAX_STRENGTH", "MAX_ORGANIZATION", "DEFAULT_MORALE", "WEIGHT", "SUPPLY_CONSUMPTION", "SUPPRESSION", "SUPPRESSION_FACTOR", "INITIATIVE", "SAME_SUPPORT_TYPE"
-        }, new List<string>
-        {
-            "System.String", "System.Int32", "System.Boolean", "System.Boolean", "System.Boolean", "System.String", "System.Double", "System.Double", "System.String", "System.Int32", "System.Int32", "System.Double", "System.Double", "System.Double", "System.Double", "System.Double", "System.Double", "System.Double", "System.Double", "System.String"
+            new Tuple<string, string>("ID", "System.String"),
+            new Tuple<string, string>("PRIORITY", "System.Int32"),
+            new Tuple<string, string>("ACTIVE", "System.Boolean"),
+            new Tuple<string, string>("AFFECTS_SPEED", "System.Boolean"),
+            new Tuple<string, string>("CAN_BE_PARACHUTED", "System.Boolean"),
+            new Tuple<string, string>("TYPE", "System.String"),
+            new Tuple<string, string>("ENTRENCHMENT", "System.Double"),
+            new Tuple<string, string>("RECON", "System.Double"),
+            new Tuple<string, string>("GROUP", "System.String"),
+            new Tuple<string, string>("COMBAT_WIDTH", "System.Int32"),
+            new Tuple<string, string>("MANPOWER", "System.Int32"),
+            new Tuple<string, string>("MAX_STRENGTH", "System.Double"),
+            new Tuple<string, string>("MAX_ORGANIZATION", "System.Double"),
+            new Tuple<string, string>("DEFAULT_MORALE", "System.Double"),
+            new Tuple<string, string>("WEIGHT", "System.Double"),
+            new Tuple<string, string>("SUPPLY_CONSUMPTION", "System.Double"),
+            new Tuple<string, string>("SUPPRESSION", "System.Double"),
+            new Tuple<string, string>("SUPPRESSION_FACTOR", "System.Double"),
+            new Tuple<string, string>("INITIATIVE", "System.Double"),
+            new Tuple<string, string>("SAME_SUPPORT_TYPE", "System.String")
         });
 
-        public static DataTable RegimentModifiersTable = CreateDataTable("RegimentModifiersTable", new List<string>
+        public static DataTable RegimentModifiersTable = CreateDataTable("RegimentModifiersTable", new List<Tuple<string,string>>
         {
-            "ID", "MODIFIER_TYPE", "ATTACK", "MOVEMENT", "DEFENSE"
-        }, new List<string>
-        {
-            "System.String", "System.String", "System.Double", "System.Double", "System.Double"
+            new Tuple<string, string>("ID", "System.String"),
+            new Tuple<string, string>("MODIFIER_TYPE", "System.String"),
+            new Tuple<string, string>("ATTACK", "System.Double"),
+            new Tuple<string, string>("MOVEMENT", "System.Double"),
+            new Tuple<string, string>("DEFENSE", "System.Double")
         });
 
-        public static DataTable RegimentCategoriesTable = CreateDataTable("RegimentCategoriesTable", new List<string>
+        public static DataTable RegimentCategoriesTable = CreateDataTable("RegimentCategoriesTable", new List<Tuple<string, string>>
         {
-            "ID", "CATEGORY"
+            new Tuple<string, string>("ID", "System.String"),
+            new Tuple<string, string>("CATEGORY", "System.String")
         });
 
-        public static DataTable RegimentNeedsTable = CreateDataTable("RegimentNeedsTable", new List<string>
+        public static DataTable RegimentNeedsTable = CreateDataTable("RegimentNeedsTable", new List<Tuple<string, string>>
         {
-            "ID", "EQUIPMENT_ID", "NUMBER"
-        }, new List<string>
-        {
-            "System.String", "System.String", "System.Int32"
+            new Tuple<string, string>("ID", "System.String"),
+            new Tuple<string, string>("EQUIPMENT_ID", "System.String"),
+            new Tuple<string, string>("NUMBER", "System.Int32")
         });
 
         public static Dictionary<string, LandEquipment> EquipmentDictionary = new Dictionary<string, LandEquipment>();
@@ -77,6 +108,23 @@ namespace HoI4Parser.Services
                     col.DataType = Type.GetType(types[i]);
                 else
                     col.DataType = Type.GetType("System.String");
+                table.Columns.Add(col);
+            }
+
+            return table;
+        }
+
+        public static DataTable CreateDataTable(string name, List<Tuple<string, string>> columns)
+        {
+            DataTable table = HoI4Set.Tables.Add(name);
+
+            // For each column, create a new column in the DataTable
+            for (int i = 0; i < columns.Count; i++)
+            {
+                DataColumn col = new DataColumn();
+                col.ColumnName = columns[i].Item1;
+                col.AllowDBNull = true;
+                col.DataType = Type.GetType(columns[i].Item2);
                 table.Columns.Add(col);
             }
 

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ymTOtjm8H9PoCbomN/92yJmp8iuiaorzu1UCFWt+r08dS9bQtjg7BNmdGfV6A/hAPUa+XcHlsPa9aMP5YUHhZA==",
+  "dgSpecHash": "T5YuLGaxhCSTz1hnXrHCjYXuaRTTxGKv4jJxeoPKQiiLdcPTtfktvGIqvagYuW/wFfmW43wNlbmmpeM9+vaj7Q==",
   "success": true,
-  "projectFilePath": "C:\\Users\\alber\\source\\repos\\HoI4Parser\\HoI4Parser\\GameFileParser\\HoI4Parser.csproj",
+  "projectFilePath": "C:\\Users\\alber\\Source\\repos\\HoI4Parser\\HoI4Parser\\GameFileParser\\HoI4Parser.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\alber\\.nuget\\packages\\microsoft.netcore.platforms\\2.0.0\\microsoft.netcore.platforms.2.0.0.nupkg.sha512",
     "C:\\Users\\alber\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",

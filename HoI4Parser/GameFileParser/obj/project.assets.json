@@ -165,17 +165,21 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\alber\\.nuget\\packages\\": {}
+    "C:\\Users\\alber\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\alber\\source\\repos\\HoI4Parser\\HoI4Parser\\GameFileParser\\HoI4Parser.csproj",
+      "projectUniqueName": "C:\\Users\\alber\\Source\\Repos\\HoI4Parser\\HoI4Parser\\GameFileParser\\HoI4Parser.csproj",
       "projectName": "HoI4Parser",
-      "projectPath": "C:\\Users\\alber\\source\\repos\\HoI4Parser\\HoI4Parser\\GameFileParser\\HoI4Parser.csproj",
+      "projectPath": "C:\\Users\\alber\\Source\\Repos\\HoI4Parser\\HoI4Parser\\GameFileParser\\HoI4Parser.csproj",
       "packagesPath": "C:\\Users\\alber\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\alber\\source\\repos\\HoI4Parser\\HoI4Parser\\GameFileParser\\obj\\",
+      "outputPath": "C:\\Users\\alber\\Source\\Repos\\HoI4Parser\\HoI4Parser\\GameFileParser\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      ],
       "configFilePaths": [
         "C:\\Users\\alber\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -185,7 +189,8 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://api.nuget.org/v3/index.json": {}
+        "https://api.nuget.org/v3/index.json": {},
+        "https://nugetized.blob.core.windows.net/live-reload/index.json": {}
       },
       "frameworks": {
         "netcoreapp3.1": {
@@ -227,7 +232,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.200\\RuntimeIdentifierGraph.json"
       }
     }
   }
