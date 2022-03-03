@@ -56,13 +56,18 @@ namespace HoI4Parser.Models
                     Group = parser.ReadString();
                     break;
                 case "categories":
-                    Categories.Add(parser.ReadString());
+                    Categories = parser.ReadStringList();
                     break;
                 case "combat_width":
                     CombatWidth = parser.ReadInt32();
                     break;
                 case "need":
-                    Needs.Add(parser.Parse(new EquipmentNeed()));
+                    var dict = parser.ReadDictionary<string, int>(p => p.ReadString(), p => p.ReadInt32());
+
+                    foreach (var item in dict)
+                    {
+                        Needs.Add(new EquipmentNeed(item.Key, item.Value));
+                    }
                     break;
                 case "manpower":
                     Manpower = parser.ReadInt32();
