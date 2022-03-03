@@ -18,7 +18,7 @@ namespace HoI4Parser.Models
 
         public void TokenCallback(ParadoxParser parser, string token)
         {
-            switch(token)
+            switch (token)
             {
                 case "graphical_culture":
                     GraphicalCulture = parser.ReadString();
@@ -29,7 +29,16 @@ namespace HoI4Parser.Models
                     break;
 
                 case "color":
-                    ColorCodes = parser.ReadIntList();
+                    if (parser.NextIsBracketed())
+                    {
+                        ColorCodes = parser.ReadIntList();
+                    }
+                    else
+                    {
+                        string garbage = parser.ReadString();
+                        ColorCodes = parser.ReadIntList();
+                    }
+
                     break;
             }
         }

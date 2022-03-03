@@ -1,5 +1,9 @@
-﻿using System;
+﻿using HoI4Parser.Models;
+using HoI4Parser.Services;
+using Pdoxcl2Sharp;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Text;
 
@@ -31,14 +35,17 @@ namespace HoI4Parser.Parsers
 
                     using (FileStream fs = new FileStream(countryPath, FileMode.Open))
                     {
+                        Console.WriteLine(countryPath);
+                        CountryStyle style = ParadoxParser.Parse(fs, new CountryStyle());
+
+                        Color color = Color.FromArgb(style.ColorCodes[0], style.ColorCodes[1], style.ColorCodes[2]);
+                        string hex = "#" + color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
+
+                        Country country = new Country(name, tag, hex);
+                        DataService.WriteCountry(country);
                     }
                 }
             }
-        }
-
-        public static void LoadCountryColors(string path)
-        {
-
         }
     }
 }

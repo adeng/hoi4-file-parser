@@ -174,6 +174,18 @@ namespace HoI4Parser.Services
             EquipmentTable.AcceptChanges();
         }
 
+        public static void WriteCountry(Country country)
+        {
+            DataRow row = CountryTable.NewRow();
+
+            row["TAG"] = country.Tag;
+            row["NAME"] = country.Name;
+            row["COLOR"] = country.Color;
+
+            CountryTable.Rows.Add(row);
+            CountryTable.AcceptChanges();
+        }
+
         public static void WriteRegiment(RegimentFamily family)
         {
             for (int i = family.RegimentList.Count - 1; i >= 0; i--)
