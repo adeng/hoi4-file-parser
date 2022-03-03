@@ -50,7 +50,7 @@ namespace HoI4Parser.Models
                     Active = parser.ReadString() == "yes";
                     break;
                 case "type":
-                    Type.Add(parser.ReadString());
+                    Type = parser.ReadStringList();
                     break;
                 case "group":
                     Group = parser.ReadString();

@@ -11,6 +11,7 @@ namespace HoI4Parser
         {
             UnitsParser.LoadEquipment(filepath + @"\common\units\equipment");
             UnitsParser.LoadRegiments(filepath + @"\common\units");
+            CountryParser.LoadCountryTags(filepath + @"\common\country_tags");
         }
     }
 }

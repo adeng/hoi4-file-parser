@@ -13,6 +13,13 @@ namespace HoI4Parser.Services
         /// </summary>
         public static DataSet HoI4Set = new DataSet();
 
+        public static DataTable CountryTable = CreateDataTable("CountryTable", new List<Tuple<string, string>>
+        {
+            new Tuple<string, string>("TAG", "System.String"),
+            new Tuple<string, string>("NAME", "System.String"),
+            new Tuple<string, string>("COLOR", "System.String")
+        });
+
         public static DataTable EquipmentTable = CreateDataTable("EquipmentTable", new List<Tuple<string, string>>
         {
             new Tuple<string, string>("ID", "System.String"),

@@ -24,7 +24,7 @@ namespace HoI4Parser.Parsers
             for (int i = files.Length - 1; i >= 0; i--)
             {
                 // Skip ships and planes for now
-                if (files[i].Contains("ship") || files[i].Contains("airframe") || files[i].Contains("convoys"))
+                if (files[i].Contains("ship") || files[i].Contains("airframe") || files[i].Contains("convoys") || files[i].Contains("chassis"))
                     continue;
 
                 // Iterate over equipment
