@@ -18,6 +18,7 @@ namespace HoI4Parser.Parsers
         public static void LoadCountryTags(string path)
         {
             string[] files = Directory.GetFiles(path, "*.txt", SearchOption.TopDirectoryOnly);
+            List<Country> countries = new List<Country>();
 
             for(int i = 0; i < files.Length; i++)
             {
@@ -42,10 +43,12 @@ namespace HoI4Parser.Parsers
                         string hex = "#" + color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
 
                         Country country = new Country(name, tag, hex);
-                        DataService.WriteCountry(country);
+                        countries.Add(country);
                     }
                 }
             }
+
+            DataService.WriteCountries(countries);
         }
     }
 }
