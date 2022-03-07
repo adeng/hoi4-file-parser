@@ -17,6 +17,9 @@ namespace HoI4Parser
             UnitsParser.LoadRegiments(filepath + @"\common\units");
             CountryParser.LoadCountryTags(filepath + @"\common\country_tags");
             LocalizationParser.LoadLocalizationFolder(filepath + @"\localisation\english");
+
+            // Finish
+            Console.WriteLine("All files parsed and loaded");
         }
     }
 }

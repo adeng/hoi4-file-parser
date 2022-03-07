@@ -148,7 +148,9 @@ namespace HoI4Parser.Services
 
         public static void WriteLandEquipment(EquipmentFamily family)
         {
-            string sql = "INSERT INTO EquipmentTable VALUES(";
+            if (family.EquipmentList.Count == 0) return;
+
+            string sql = "INSERT INTO EquipmentTable VALUES";
 
             for (int j = family.EquipmentList.Count - 1; j >= 0; j--)
             {
@@ -165,8 +167,6 @@ namespace HoI4Parser.Services
                 }
             }
 
-            sql += ")";
-
             using (var connection = new SQLiteConnection($"Data Source={DATABASE_STRING}"))
             {
                 connection.Open();
@@ -181,21 +181,33 @@ namespace HoI4Parser.Services
 
         public static void WriteLocalizations(List<Tuple<string, string>> localizations)
         {
-            string sql = "INSERT INTO LocalizationTable VALUES(";
+            string sql = "INSERT INTO LocalizationTable VALUES";
 
-            for (int i = localizations.Count - 1; i >= 0; i--)
-            {
-                sql += $"('{localizations[i].Item1}','{localizations[i].Item2}')";
-
-                if (i > 0)
-                    sql += ",";
-            }
-
-            sql += ")";
 
             using (var connection = new SQLiteConnection($"Data Source={DATABASE_STRING}"))
             {
                 connection.Open();
+
+                for (int i = localizations.Count - 1, j = 1; i >= 0; i--, j++)
+                {
+                    sql += $"('{localizations[i].Item1.Replace("\'","\'\'")}','{localizations[i].Item2.Replace("\'", "\'\'")}'),";
+
+                    if (j % 10000 == 0)
+                    {
+                        sql = sql.TrimEnd(',');
+
+                        using (var command = new SQLiteCommand(connection))
+                        {
+                            command.CommandText = sql;
+                            command.ExecuteNonQuery();
+                        }
+
+                        sql = "INSERT INTO LocalizationTable VALUES";
+                    }
+                }
+
+                // Flush out what's left over 
+                sql = sql.TrimEnd(',');
 
                 using (var command = new SQLiteCommand(connection))
                 {
@@ -207,7 +219,7 @@ namespace HoI4Parser.Services
 
         public static void WriteCountries(List<Country> countries)
         {
-            string sql = "INSERT INTO CountryTable VALUES(";
+            string sql = "INSERT INTO CountryTable VALUES";
 
             for (int i = countries.Count - 1; i >= 0; i--)
             {
@@ -216,9 +228,6 @@ namespace HoI4Parser.Services
                 if (i > 0)
                     sql += ",";
             }
-
-            sql += ")";
-
 
             using (var connection = new SQLiteConnection($"Data Source={DATABASE_STRING}"))
             {
@@ -235,87 +244,112 @@ namespace HoI4Parser.Services
 
         public static void WriteRegiment(RegimentFamily family)
         {
-            string sqlMain = "INSERT INTO RegimentTable VALUES(";
-            string sqlModifiers = "INSERT INTO RegimentModifiersTable VALUES(";
-            string sqlCategories = "INSERT INTO RegimentCategoriesTable VALUES(";
-            string sqlNeeds = "INSERT INTO RegimentNeedsTable VALUES(";
+            if (family.RegimentList.Count == 0)
+                return;
+
+            bool[] hasData = { false, false, false, false };
+
+            string sqlMain = "INSERT INTO RegimentTable VALUES";
+            string sqlModifiers = "INSERT INTO RegimentModifiersTable VALUES";
+            string sqlCategories = "INSERT INTO RegimentCategoriesTable VALUES";
+            string sqlNeeds = "INSERT INTO RegimentNeedsTable VALUES";
 
             for (int i = family.RegimentList.Count - 1; i >= 0; i--)
             {
                 var regiment = family.RegimentList[i];
 
                 // Write to RegimentTable
-                for (int k = regiment.Type.Count - 1; k >= 0; k--)
+                if (regiment.Type.Count > 0)
                 {
-                    sqlMain += $"('{regiment.ID}',{regiment.Priority},'{regiment.Active}','{regiment.AffectsSpeed}','{regiment.CanBeParachuted}'," +
-                        $"'{regiment.Type[k]}',{regiment.Entrenchment},{regiment.Recon},'{regiment.Group}',{regiment.CombatWidth},{regiment.Manpower}," +
-                        $"{regiment.MaxStrength},{regiment.MaxOrganization},{regiment.DefaultMorale},{regiment.Weight},{regiment.SupplyConsumption}," +
-                        $"{regiment.Suppression},{regiment.SuppressionFactor},{regiment.Initiative},'{regiment.SameSupportType}')";
+                    for (int k = regiment.Type.Count - 1; k >= 0; k--)
+                    {
+                        sqlMain += $"('{regiment.ID}',{regiment.Priority},'{regiment.Active}','{regiment.AffectsSpeed}','{regiment.CanBeParachuted}'," +
+                            $"'{regiment.Type[k]}',{regiment.Entrenchment},{regiment.Recon},'{regiment.Group}',{regiment.CombatWidth},{regiment.Manpower}," +
+                            $"{regiment.MaxStrength},{regiment.MaxOrganization},{regiment.DefaultMorale},{regiment.Weight},{regiment.SupplyConsumption}," +
+                            $"{regiment.Suppression},{regiment.SuppressionFactor},{regiment.Initiative},'{regiment.SameSupportType}'),";
+                    }
 
-                    if (k > 0 && i > 0)
-                        sqlMain += ",";
+                    hasData[0] = true;
                 }
 
                 // Write to RegimentModifiers table
-                for (int j = regiment.Modifiers.Count - 1; j >= 0; j--)
+                if (regiment.Modifiers.Count > 0)
                 {
-                    sqlModifiers += $"('{regiment.ID}','{regiment.Modifiers[j].ModifierType}',{regiment.Modifiers[j].Attack},{regiment.Modifiers[j].Movement}," +
-                        $"{regiment.Modifiers[j].Defense})";
+                    for (int j = regiment.Modifiers.Count - 1; j >= 0; j--)
+                    {
+                        sqlModifiers += $"('{regiment.ID}','{regiment.Modifiers[j].ModifierType}',{regiment.Modifiers[j].Attack},{regiment.Modifiers[j].Movement}," +
+                            $"{regiment.Modifiers[j].Defense}),";
+                    }
 
-                    if (j > 0 && i > 0)
-                        sqlModifiers += ",";
+                    hasData[1] = true;
                 }
 
                 // Write to RegimentCategories table
-                for (int l = regiment.Categories.Count - 1; l >= 0; l--)
+                if (regiment.Categories.Count > 0)
                 {
-                    sqlCategories += $"('{regiment.ID}','{regiment.Categories[l]}')";
+                    for (int l = regiment.Categories.Count - 1; l >= 0; l--)
+                    {
+                        sqlCategories += $"('{regiment.ID}','{regiment.Categories[l]}'),";
+                    }
 
-                    if (l > 0 && i > 0)
-                        sqlCategories += ",";
+                    hasData[2] = true;
                 }
 
                 // Write to the RequirementNeeds table
-                for (int m = regiment.Needs.Count - 1; m >= 0; m--)
+                if (regiment.Needs.Count > 0)
                 {
-                    sqlNeeds += $"('{regiment.ID}','{regiment.Needs[m].EquipmentID}',{regiment.Needs[m].Number})";
+                    for (int m = regiment.Needs.Count - 1; m >= 0; m--)
+                    {
+                        sqlNeeds += $"('{regiment.ID}','{regiment.Needs[m].EquipmentID}',{regiment.Needs[m].Number}),";
+                    }
 
-                    if (m > 0 && i > 0)
-                        sqlNeeds += ",";
+                    hasData[3] = true;
                 }
             }
 
-            sqlMain += ")";
-            sqlModifiers += ")";
-            sqlCategories += ")";
-            sqlNeeds += ")";
+            sqlMain = sqlMain.TrimEnd(',');
+            sqlNeeds = sqlNeeds.TrimEnd(',');
+            sqlModifiers = sqlModifiers.TrimEnd(',');
+            sqlCategories = sqlCategories.TrimEnd(',');
 
             using (var connection = new SQLiteConnection($"Data Source={DATABASE_STRING}"))
             {
                 connection.Open();
 
-                using (var command = new SQLiteCommand(connection))
+                if (hasData[0] == true)
                 {
-                    command.CommandText = sqlMain;
-                    command.ExecuteNonQuery();
+                    using (var command = new SQLiteCommand(connection))
+                    {
+                        command.CommandText = sqlMain;
+                        command.ExecuteNonQuery();
+                    }
                 }
 
-                using (var command = new SQLiteCommand(connection))
+                if (hasData[1] == true)
                 {
-                    command.CommandText = sqlModifiers;
-                    command.ExecuteNonQuery();
+                    using (var command = new SQLiteCommand(connection))
+                    {
+                        command.CommandText = sqlModifiers;
+                        command.ExecuteNonQuery();
+                    }
                 }
 
-                using (var command = new SQLiteCommand(connection))
+                if (hasData[2] == true)
                 {
-                    command.CommandText = sqlCategories;
-                    command.ExecuteNonQuery();
+                    using (var command = new SQLiteCommand(connection))
+                    {
+                        command.CommandText = sqlCategories;
+                        command.ExecuteNonQuery();
+                    }
                 }
 
-                using (var command = new SQLiteCommand(connection))
+                if (hasData[3] == true)
                 {
-                    command.CommandText = sqlNeeds;
-                    command.ExecuteNonQuery();
+                    using (var command = new SQLiteCommand(connection))
+                    {
+                        command.CommandText = sqlNeeds;
+                        command.ExecuteNonQuery();
+                    }
                 }
             }
         }
