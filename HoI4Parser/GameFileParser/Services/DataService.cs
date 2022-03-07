@@ -124,6 +124,17 @@ namespace HoI4Parser.Services
                     new Tuple<string, string>("EQUIPMENT_ID", "System.String"),
                     new Tuple<string, string>("NUMBER", "System.Int32")
                 }, connection);
+
+                CreateSQLTable("StrategyPlanTable", new List<Tuple<string, string>>
+                {
+                    new Tuple<string, string>("ID", "System.String"),
+                    new Tuple<string, string>("TAG", "System.String"),
+                    new Tuple<string, string>("NAME", "System.String"),
+                    new Tuple<string, string>("DESCRIPTION", "System.String"),
+                    new Tuple<string, string>("IDEOLOGY", "System.String"),
+                    new Tuple<string, string>("ORDER", "System.Int32"),
+                    new Tuple<string, string>("NATIONAL_FOCUS", "System.String")
+                }, connection);
             }
         }
 
@@ -238,7 +249,44 @@ namespace HoI4Parser.Services
                     command.CommandText = sql;
                     command.ExecuteNonQuery();
                 }
+            }
+        }
 
+        public static void WriteStrategy(StrategyPlanShell plans)
+        {
+            if (plans.StrategyPlanList.Count == 0)
+                return;
+
+            using (var connection = new SQLiteConnection($"Data Source={DATABASE_STRING}"))
+            {
+                connection.Open();
+
+                for (int i = plans.StrategyPlanList.Count - 1; i >= 0; i--)
+                {
+                    StrategyPlan plan = plans.StrategyPlanList[i];
+                    if (plan.NationalFocuses.Count == 0)
+                        continue;
+
+                    string sql = "INSERT INTO StrategyPlanTable VALUES";
+
+                    for (int j = 0; j < plan.NationalFocuses.Count; j++)
+                    {
+                        string description = plan.Description;
+                        if (description != null)
+                            description = description.Replace("'", "''");
+                        sql += $"('{plan.ID}','{plan.Tag}','{plan.Name.Replace("'", "''")}','{description}','{plan.Ideology}',{j + 1},'{plan.NationalFocuses[j]}'),";
+                    }
+
+                    sql = sql.TrimEnd(',');
+
+                    using (var command = new SQLiteCommand(connection))
+                    {
+                        command.CommandText = sql;
+                        command.ExecuteNonQuery();
+
+                        sql = "INSERT INTO StrategyPlanTable VALUES";
+                    }
+                }
             }
         }
 

@@ -20,7 +20,7 @@ namespace HoI4Parser.Parsers
             string[] files = Directory.GetFiles(path, "*.txt", SearchOption.TopDirectoryOnly);
             List<Country> countries = new List<Country>();
 
-            for(int i = 0; i < files.Length; i++)
+            for (int i = 0; i < files.Length; i++)
             {
                 if (Path.GetFileName(files[i]) == "zz_dynamic_countries.txt")
                     continue;
@@ -49,6 +49,24 @@ namespace HoI4Parser.Parsers
             }
 
             DataService.WriteCountries(countries);
+        }
+
+        public static void LoadAIStrategies(string path)
+        {
+            string[] files = Directory.GetFiles(path, "*.txt", SearchOption.TopDirectoryOnly);
+            List<StrategyPlanShell> list = new List<StrategyPlanShell>();
+
+            for (int i = files.Length - 1; i >= 0; i--)
+            {
+                // Iterate over AI plans
+                using (FileStream fs = new FileStream(files[i], FileMode.Open))
+                {
+                    Console.WriteLine(files[i]);
+                    StrategyPlanShell file = ParadoxParser.Parse(fs, new StrategyPlanShell());
+
+                    DataService.WriteStrategy(file);
+                }
+            }
         }
     }
 }
