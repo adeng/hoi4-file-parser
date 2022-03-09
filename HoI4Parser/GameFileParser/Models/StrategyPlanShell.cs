@@ -1,4 +1,5 @@
-﻿using Pdoxcl2Sharp;
+﻿using HoI4Parser.Parsers;
+using Pdoxcl2Sharp;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -26,6 +27,8 @@ namespace HoI4Parser.Models
                 {
                     plan.Tag = id.Substring(0, 3);
                 }
+
+                plan.Enabled = !CountryParser.DisablePlanList.Contains(id);
 
                 StrategyPlanList.Add(plan);
             }

@@ -9,7 +9,7 @@ using HoI4Parser.Models;
 
 namespace HoI4Parser.Parsers
 {
-    class UnitsParser
+    public static class UnitsParser
     {
         /// <summary>
         /// Iterate over all equipment paths.

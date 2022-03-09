@@ -18,6 +18,9 @@ namespace HoI4Parser
             CountryParser.LoadCountryTags(filepath + @"\common\country_tags");
             LocalizationParser.LoadLocalizationFolder(filepath + @"\localisation\english");
             CountryParser.LoadAIStrategies(filepath + @"\common\ai_strategy_plans");
+            ImageParser.LoadFlags(filepath + @"\gfx\flags", "full");
+            ImageParser.LoadFlags(filepath + @"\gfx\flags\medium", "medium");
+            ImageParser.LoadFlags(filepath + @"\gfx\flags\small", "small");
 
             // Finish
             Console.WriteLine("All files parsed and loaded");

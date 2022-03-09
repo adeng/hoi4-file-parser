@@ -133,7 +133,16 @@ namespace HoI4Parser.Services
                     new Tuple<string, string>("DESCRIPTION", "System.String"),
                     new Tuple<string, string>("IDEOLOGY", "System.String"),
                     new Tuple<string, string>("ORDER", "System.Int32"),
-                    new Tuple<string, string>("NATIONAL_FOCUS", "System.String")
+                    new Tuple<string, string>("NATIONAL_FOCUS", "System.String"),
+                    new Tuple<string, string>("ENABLED", "System.Boolean")
+                }, connection);
+
+                CreateSQLTable("FlagImageTable", new List<Tuple<string, string>>
+                {
+                    new Tuple<string, string>("TAG", "System.String"),
+                    new Tuple<string, string>("FILENAME", "System.String"),
+                    new Tuple<string, string>("BITMAP", "System.String"),
+                    new Tuple<string, string>("SIZE", "System.String")
                 }, connection);
             }
         }
@@ -252,6 +261,30 @@ namespace HoI4Parser.Services
             }
         }
 
+        public static void WriteFlagImages(List<FlagImage> images)
+        {
+            using(var connection = new SQLiteConnection($"Data Source={DATABASE_STRING}"))
+            {
+                connection.Open();
+
+                string sql = "INSERT INTO FlagImageTable VALUES";
+                for (int i = images.Count - 1; i >= 0; i--)
+                {
+                    FlagImage image = images[i];
+
+                    sql += $"('{image.Tag}','{image.FileName}','{image.Bitmap}','{image.Size}'),";
+                }
+
+                sql = sql.TrimEnd(',');
+
+                using (var command = new SQLiteCommand(connection))
+                {
+                    command.CommandText = sql;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
         public static void WriteStrategy(StrategyPlanShell plans)
         {
             if (plans.StrategyPlanList.Count == 0)
@@ -274,7 +307,7 @@ namespace HoI4Parser.Services
                         string description = plan.Description;
                         if (description != null)
                             description = description.Replace("'", "''");
-                        sql += $"('{plan.ID}','{plan.Tag}','{plan.Name.Replace("'", "''")}','{description}','{plan.Ideology}',{j + 1},'{plan.NationalFocuses[j]}'),";
+                        sql += $"('{plan.ID}','{plan.Tag}','{plan.Name.Replace("'", "''")}','{description}','{plan.Ideology}',{j + 1},'{plan.NationalFocuses[j]}','{plan.Enabled}'),";
                     }
 
                     sql = sql.TrimEnd(',');

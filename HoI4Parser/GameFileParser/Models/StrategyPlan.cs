@@ -13,6 +13,7 @@ namespace HoI4Parser.Models
         public string Ideology { get; set; }
         public string Tag { get; set; }
         public IList<string> NationalFocuses { get; set; }
+        public bool Enabled { get; set; }
 
         public StrategyPlan()
         {

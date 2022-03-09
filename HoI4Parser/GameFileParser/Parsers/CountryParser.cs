@@ -5,12 +5,20 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace HoI4Parser.Parsers
 {
-    class CountryParser
+    public static class CountryParser
     {
+        public static List<string> DisablePlanList = new List<string>
+        {
+            "SPR_historical_plan_war_with_axis",
+            "SPR_historical_plan_war_with_allies"
+        };
+
+
         /// <summary>
         /// Iterate over country tags files to capture the list of tags
         /// </summary>
@@ -54,7 +62,7 @@ namespace HoI4Parser.Parsers
         public static void LoadAIStrategies(string path)
         {
             string[] files = Directory.GetFiles(path, "*.txt", SearchOption.TopDirectoryOnly);
-            List<StrategyPlanShell> list = new List<StrategyPlanShell>();
+            List<StrategyPlan> list = new List<StrategyPlan>();
 
             for (int i = files.Length - 1; i >= 0; i--)
             {
@@ -63,10 +71,13 @@ namespace HoI4Parser.Parsers
                 {
                     Console.WriteLine(files[i]);
                     StrategyPlanShell file = ParadoxParser.Parse(fs, new StrategyPlanShell());
+                    list.AddRange(file.StrategyPlanList);
 
                     DataService.WriteStrategy(file);
                 }
             }
+
+            ImageParser.StrategyPlanNameList = list.Select(plan => plan.ID).ToList();
         }
     }
 }
