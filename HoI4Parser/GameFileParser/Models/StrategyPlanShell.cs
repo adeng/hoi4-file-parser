@@ -30,7 +30,9 @@ namespace HoI4Parser.Models
 
                 plan.Enabled = !CountryParser.DisablePlanList.Contains(id);
 
-                StrategyPlanList.Add(plan);
+                // Exclude this duplicate
+                if(plan.Name != "Latvian historical plan" && plan.ID == "LAT_historical")
+                    StrategyPlanList.Add(plan);
             }
         }
     }

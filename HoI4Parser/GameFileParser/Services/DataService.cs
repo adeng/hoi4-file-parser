@@ -144,6 +144,12 @@ namespace HoI4Parser.Services
                     new Tuple<string, string>("BITMAP", "System.String"),
                     new Tuple<string, string>("SIZE", "System.String")
                 }, connection);
+
+                CreateSQLTable("StrategyFlagMatchTable", new List<Tuple<string, string>>
+                {
+                    new Tuple<string, string>("STRATEGY_PLAN_ID", "System.String"),
+                    new Tuple<string, string>("FLAG_FILENAME", "System.String")
+                }, connection);
             }
         }
 
@@ -252,6 +258,30 @@ namespace HoI4Parser.Services
             using (var connection = new SQLiteConnection($"Data Source={DATABASE_STRING}"))
             {
                 connection.Open();
+
+                using (var command = new SQLiteCommand(connection))
+                {
+                    command.CommandText = sql;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void WriteFlagMatches(List<Tuple<string, string>> matches)
+        {
+            using(var connection = new SQLiteConnection($"Data Source={DATABASE_STRING}"))
+            {
+                connection.Open();
+
+                string sql = "INSERT INTO StrategyFlagMatchTable VALUES";
+                for(int i = matches.Count - 1; i >= 0; i--)
+                {
+                    var match = matches[i];
+
+                    sql += $"('{match.Item1}','{match.Item2}'),";
+                }
+
+                sql = sql.TrimEnd(',');
 
                 using (var command = new SQLiteCommand(connection))
                 {

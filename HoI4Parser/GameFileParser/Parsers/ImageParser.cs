@@ -14,7 +14,7 @@ namespace HoI4Parser.Parsers
 {
     public static class ImageParser
     {
-        public static List<string> StrategyPlanNameList;
+        public static HashSet<string> StrategyPlanNameList = new HashSet<string>();
 
         public static Dictionary<string, string> StrategyPlanMatches = new Dictionary<string, string>
         {
@@ -58,7 +58,54 @@ namespace HoI4Parser.Parsers
             { "POL_monarchy_habsburg_plan", "POL_KINGDOM_neutrality" },
             { "POL_monarchy_bermondtian_plan", "POL_KINGDOM_neutrality" },
             { "POL_monarchy_romania_plan", "POL_ROM_UNION_neutrality" },
-            //{ "POL_monarchy_commonwealth_plan",  }
+            { "POL_monarchy_commonwealth_plan", "plc_unified_neutrality" },
+            { "NZL_historical", "NZL_democratic" },
+            { "mexico_fascist_latin_american_order", "MEX_cristero_fascism" },
+            { "mexico_social_catholicism", "MEX_cristero_democratic" },
+            { "mexico_historical", "MEX_neutrality" },
+            { "MAN_historical_plan", "MAN" },
+            { "MAN_default_plan", "man_restored" },
+            { "LIT_historical", "LIT_neutrality" },
+            { "LIT_monarchist", "plc_unified_neutrality" },
+            { "LAT_entente", "bal_unified_democratic" },
+            { "LAT_historical", "LAT_neutrality" },
+            { "JAP_historical_plan", "JAP_fascism" },
+            { "JAP_alternate_plan_strike_north", "JAP_neutrality" },
+            { "ITA_historical_plan", "ITA_fascism" },
+            { "HUN_historical", "HUN_neutrality" },
+            { "HUN_alternate_COM", "HUN_communism" },
+            { "HUN_alternate_FAS", "HUN_fascism" },
+            { "HUN_alternate_DEM", "HUN_democratic" },
+            { "HUN_alternate_AH", "HUN_EMPIRE_neutrality" },
+            { "HOL_historical_plan", "HOL_democratic" },
+            { "HOL_alternate_monarchist_plan", "HOL_neutrality" },
+            { "HOL_lead_the_minor_democracies_democratic_plan", "HOL_benelux_unified_democratic" },
+            { "GRE_historical_plan", "GRE_neutrality" },
+            { "GRE_alternate_fascist_plan", "byz_unified_fascism" },
+            { "GRE_alternate_monarchist_plan", "MAE_fascism" },
+            { "GRE_monarchist_plan", "GRE_dem_monarchy_neutrality" },
+            { "German_alternate_kaiser", "GER_neutrality" },
+            { "German_historical", "GER_fascism" },
+            { "FRA_historical_plan", "FRA_democratic" },
+            { "FRA_alternate_plan_monarchist_bonaparte", "FRA_THIRD_EMPIRE_neutrality" },
+            { "FRA_alternate_plan_monarchist_legitimate", "FRA_neutrality" },
+            { "FRA_alternate_plan_monarchist_orleans", "FRA_neutrality" },
+            { "FRA_alternate_plan_little_entente", "FRA_democratic" },
+            { "EST_baltic_entente", "bal_unified_democratic" },
+            { "EST_historical", "EST_neutrality" },
+            { "ENG_historical_plan", "ENG_democratic" },
+            { "ENG_alternate_unaligned_plan", "ENG_neutrality" },
+            { "CZE_historical_strategy_plan", "CZE_democratic" },
+            { "CZE_alternate_strategy_plan_entente", "CZE_democratic" },
+            { "CHI_nationalist_historical_plan", "CHI_neutrality" },
+            { "CAN_historical", "CAN_ALY" },
+            { "BUL_historical_plan", "BUL_neutrality" },
+            { "BUL_democratic_socialist", "UBF_united_balkan_federation_democratic" },
+            { "BUL_the_return_of_ferdinand_plan", "BUL_neutrality" },
+            { "BUL_communsit_alternate_plan", "UBF_united_balkan_federation_communism" },
+            { "BUL_communsit_plan", "BUL_communism" },
+            { "LAT_historical", "LAT_communism" },
+            { "AST_historical", "AST_democratic" }
 
         };
 
@@ -99,17 +146,16 @@ namespace HoI4Parser.Parsers
         {
             List<Tuple<string, string>> matches = new List<Tuple<string, string>>();
 
-            for(int i = 0; i < StrategyPlanNameList.Count; i++)
+            foreach(var id in StrategyPlanNameList)
             {
-                string id = StrategyPlanNameList[i];
                 string tag = id.Substring(0, 3);
                 string guess = "";
 
                 if (id.Contains("fascist"))
-                    guess = $"{tag}_fascist";
+                    guess = $"{tag}_fascism";
                 else if (id.Contains("democratic"))
                     guess = $"{tag}_democratic";
-                else if (id.Contains("communist"))
+                else if (id.Contains("communism"))
                     guess = $"{tag}_communist";
                 else if (id.Contains("neutrality"))
                     guess = $"{tag}_neutrality";
@@ -127,6 +173,8 @@ namespace HoI4Parser.Parsers
                     // Don't know what else to do
                     matches.Add(new Tuple<string, string>(id, null));
             }
+
+            DataService.WriteFlagMatches(matches);
         }
 
         public static string GetFlagImage(string path)

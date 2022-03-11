@@ -15,7 +15,18 @@ namespace HoI4Parser.Parsers
         public static List<string> DisablePlanList = new List<string>
         {
             "SPR_historical_plan_war_with_axis",
-            "SPR_historical_plan_war_with_allies"
+            "SPR_historical_plan_war_with_allies",
+            "JAP_manchukuo_player_historical_plan",
+            "FRA_alternate_plan_1",
+            "FRA_alternate_plan_2",
+            "FRA_alternate_plan_3_regular",
+            "FRA_alternate_plan_3_lar",
+            "FRA_alternate_plan_4_lar",
+            "CHI_alternate_plan_1",
+            "ITA_alternate_plan_4",
+            "ITA_alternate_plan_3",
+            "ITA_alternate_plan_2",
+            "ITA_alternate_plan_1"
         };
 
 
@@ -63,6 +74,7 @@ namespace HoI4Parser.Parsers
         {
             string[] files = Directory.GetFiles(path, "*.txt", SearchOption.TopDirectoryOnly);
             List<StrategyPlan> list = new List<StrategyPlan>();
+            HashSet<string> planNames = new HashSet<string>();
 
             for (int i = files.Length - 1; i >= 0; i--)
             {
@@ -72,12 +84,11 @@ namespace HoI4Parser.Parsers
                     Console.WriteLine(files[i]);
                     StrategyPlanShell file = ParadoxParser.Parse(fs, new StrategyPlanShell());
                     list.AddRange(file.StrategyPlanList);
+                    ImageParser.StrategyPlanNameList.UnionWith(file.StrategyPlanList.Select(plan => plan.ID));
 
                     DataService.WriteStrategy(file);
                 }
             }
-
-            ImageParser.StrategyPlanNameList = list.Select(plan => plan.ID).ToList();
         }
     }
 }
