@@ -45,13 +45,10 @@ namespace HoI4Parser.Models
                     Archetype = parser.ReadString();
                     break;
                 case "type":
-                    try
-                    {
+                    if (parser.NextIsBracketed())
                         Type = parser.ReadStringList();
-                    } catch
-                    {
+                    else
                         Type.Add(parser.ReadString());
-                    }
                     break;
                 case "active":
                     Active = parser.ReadString() == "yes";
@@ -79,6 +76,12 @@ namespace HoI4Parser.Models
                     break;
                 case "hard_attack":
                     HardAttack = parser.ReadDouble();
+                    break;
+                case "ap_attack":
+                    APAttack = parser.ReadDouble();
+                    break;
+                case "air_attack":
+                    AirAttack = parser.ReadDouble();
                     break;
                 case "fuel_consumption":
                     FuelConsumption = parser.ReadDouble();

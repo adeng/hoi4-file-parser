@@ -172,6 +172,7 @@ namespace HoI4Parser.Services
             }
         }
 
+        // Write Queries
         public static void WriteLandEquipment(EquipmentFamily family)
         {
             if (family.EquipmentList.Count == 0) return;
@@ -462,6 +463,15 @@ namespace HoI4Parser.Services
                         command.ExecuteNonQuery();
                     }
                 }
+            }
+        }
+
+        public static void GetInfantryRegiments()
+        {
+            using (var connection = new SQLiteConnection(DATABASE_STRING))
+            {
+
+                connection.Open();
             }
         }
     }

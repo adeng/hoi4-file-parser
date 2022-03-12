@@ -78,7 +78,7 @@ namespace HoI4Parser.Models
                 case "recon":
                     Recon = parser.ReadDouble();
                     break;
-                case "max_organization":
+                case "max_organisation":
                     MaxOrganization = parser.ReadDouble();
                     break;
                 case "default_morale":
