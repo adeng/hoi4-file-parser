@@ -14,8 +14,6 @@ namespace HoI4Parser.Parsers
 {
     public static class ImageParser
     {
-        public static HashSet<string> StrategyPlanNameList = new HashSet<string>();
-
         public static Dictionary<string, string> StrategyPlanMatches = new Dictionary<string, string>
         {
             { "YUG_historical", "YUG_neutrality" },
@@ -30,6 +28,7 @@ namespace HoI4Parser.Parsers
             { "SPR_historical_plan", "SPR_democratic" },
             { "SPD_alternate_plan_2", "SPR_communism" },
             { "SPD_alternate_plan", "SPR_democratic" },
+            { "SPD_historical_plan", "SPR_democratic" },
             { "SPC_alternate_plan_2", "SPR_communism" },
             { "SPC_alternate_plan", "SPR_anarchist_spain_neutrality" },
             { "SPB_alternate_plan", "SPR_carlist_spain_neutrality" },
@@ -68,7 +67,6 @@ namespace HoI4Parser.Parsers
             { "LIT_historical", "LIT_neutrality" },
             { "LIT_monarchist", "plc_unified_neutrality" },
             { "LAT_entente", "bal_unified_democratic" },
-            { "LAT_historical", "LAT_neutrality" },
             { "JAP_historical_plan", "JAP_fascism" },
             { "JAP_alternate_plan_strike_north", "JAP_neutrality" },
             { "ITA_historical_plan", "ITA_fascism" },
@@ -146,32 +144,37 @@ namespace HoI4Parser.Parsers
         {
             List<Tuple<string, string>> matches = new List<Tuple<string, string>>();
 
-            foreach(var id in StrategyPlanNameList)
+            foreach(var id in CountryParser.StrategyPlanNameList)
             {
-                string tag = id.Substring(0, 3);
+                string tag = id.Substring(0, 3).ToUpper();
                 string guess = "";
+                bool b1 = id.Contains("communism");
+                bool b2 = id.Contains("communist");
 
                 if (id.Contains("fascist"))
                     guess = $"{tag}_fascism";
                 else if (id.Contains("democratic"))
                     guess = $"{tag}_democratic";
-                else if (id.Contains("communism"))
-                    guess = $"{tag}_communist";
+                else if (id.Contains("communism") || id.Contains("communist"))
+                    guess = $"{tag}_communism";
                 else if (id.Contains("neutrality"))
                     guess = $"{tag}_neutrality";
 
-                if (StrategyPlanMatches.ContainsKey(id))
-                    // Hand keyed previously
-                    matches.Add(new Tuple<string, string>(id, StrategyPlanMatches[id]));
-                else if (guess != "" && flagImages.Where(image => image.FileName == guess).Any())
-                    // Best match algo
-                    matches.Add(new Tuple<string, string>(id, guess));
-                else if (guess != "" && flagImages.Where(image => image.FileName == tag).Any())
-                    // Filename is generic flag
-                    matches.Add(new Tuple<string, string>(id, tag));
-                else 
-                    // Don't know what else to do
-                    matches.Add(new Tuple<string, string>(id, null));
+                if(!CountryParser.DisablePlanList.Contains(id))
+                {
+                    if (StrategyPlanMatches.ContainsKey(id))
+                        // Hand keyed previously
+                        matches.Add(new Tuple<string, string>(id, StrategyPlanMatches[id]));
+                    else if (guess != "" && flagImages.Where(image => image.FileName == guess).Any())
+                        // Best match algo
+                        matches.Add(new Tuple<string, string>(id, guess));
+                    else if (guess != "" && flagImages.Where(image => image.FileName == tag).Any())
+                        // Filename is generic flag
+                        matches.Add(new Tuple<string, string>(id, tag));
+                    else
+                        // Don't know what else to do
+                        matches.Add(new Tuple<string, string>(id, null));
+                }
             }
 
             DataService.WriteFlagMatches(matches);

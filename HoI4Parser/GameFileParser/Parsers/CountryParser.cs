@@ -12,16 +12,20 @@ namespace HoI4Parser.Parsers
 {
     public static class CountryParser
     {
+        public static HashSet<string> StrategyPlanNameList = new HashSet<string>();
+
         public static List<string> DisablePlanList = new List<string>
         {
             "SPR_historical_plan_war_with_axis",
             "SPR_historical_plan_war_with_allies",
             "JAP_manchukuo_player_historical_plan",
+            "JAP_manchukuo_player_plan",
             "FRA_alternate_plan_1",
             "FRA_alternate_plan_2",
             "FRA_alternate_plan_3_regular",
             "FRA_alternate_plan_3_lar",
             "FRA_alternate_plan_4_lar",
+            "FRA_alternate_plan_4_regular",
             "CHI_alternate_plan_1",
             "ITA_alternate_plan_4",
             "ITA_alternate_plan_3",
@@ -84,7 +88,9 @@ namespace HoI4Parser.Parsers
                     Console.WriteLine(files[i]);
                     StrategyPlanShell file = ParadoxParser.Parse(fs, new StrategyPlanShell());
                     list.AddRange(file.StrategyPlanList);
-                    ImageParser.StrategyPlanNameList.UnionWith(file.StrategyPlanList.Select(plan => plan.ID));
+
+                    var ids = file.StrategyPlanList.Where(plan => plan.NationalFocuses.Count > 0).Select(plan => plan.ID);
+                    StrategyPlanNameList.UnionWith(ids);
 
                     DataService.WriteStrategy(file);
                 }
