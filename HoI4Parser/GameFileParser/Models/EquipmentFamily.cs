@@ -42,6 +42,7 @@ namespace HoI4Parser.Models
                     EquipmentList[j].MaximumSpeed = EquipmentList[j].MaximumSpeed == 0 ? archetype.MaximumSpeed : EquipmentList[j].MaximumSpeed;
                     EquipmentList[j].Reliability = EquipmentList[j].Reliability == 0 ? archetype.Reliability : EquipmentList[j].Reliability;
                     EquipmentList[j].BuildCostIC = EquipmentList[j].BuildCostIC == 0 ? archetype.BuildCostIC : EquipmentList[j].BuildCostIC;
+                    EquipmentList[j].FuelConsumption = EquipmentList[j].FuelConsumption == 0 ? archetype.FuelConsumption : EquipmentList[j].FuelConsumption;
                     
                     if(EquipmentList[j].Type.Count == 0)
                         EquipmentList[j].Type = archetype.Type;

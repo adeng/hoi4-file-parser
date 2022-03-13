@@ -31,6 +31,7 @@ namespace HoI4Parser.Services
             };
 
         private const string DATABASE_STRING = "parser_database.db";
+        private const string READ_DATABASE_STRING = "Data Source=parser_database.db";
 
         public static Dictionary<string, LandEquipment> EquipmentDictionary = new Dictionary<string, LandEquipment>();
         public static Dictionary<string, Regiment> RegimentDictionary = new Dictionary<string, Regiment>();
@@ -217,7 +218,7 @@ namespace HoI4Parser.Services
 
                 for (int i = localizations.Count - 1, j = 1; i >= 0; i--, j++)
                 {
-                    sql += $"('{localizations[i].Item1.Replace("\'","\'\'")}','{localizations[i].Item2.Replace("\'", "\'\'")}'),";
+                    sql += $"('{localizations[i].Item1.Replace("\'", "\'\'")}','{localizations[i].Item2.Replace("\'", "\'\'")}'),";
 
                     if (j % 10000 == 0)
                     {
@@ -270,12 +271,12 @@ namespace HoI4Parser.Services
 
         public static void WriteFlagMatches(List<Tuple<string, string>> matches)
         {
-            using(var connection = new SQLiteConnection($"Data Source={DATABASE_STRING}"))
+            using (var connection = new SQLiteConnection($"Data Source={DATABASE_STRING}"))
             {
                 connection.Open();
 
                 string sql = "INSERT INTO StrategyFlagMatchTable VALUES";
-                for(int i = matches.Count - 1; i >= 0; i--)
+                for (int i = matches.Count - 1; i >= 0; i--)
                 {
                     var match = matches[i];
 
@@ -294,7 +295,7 @@ namespace HoI4Parser.Services
 
         public static void WriteFlagImages(List<FlagImage> images)
         {
-            using(var connection = new SQLiteConnection($"Data Source={DATABASE_STRING}"))
+            using (var connection = new SQLiteConnection($"Data Source={DATABASE_STRING}"))
             {
                 connection.Open();
 
@@ -466,12 +467,108 @@ namespace HoI4Parser.Services
             }
         }
 
-        public static void GetInfantryRegiments()
+        public static DataTable GetRegimentNeeds()
         {
-            using (var connection = new SQLiteConnection(DATABASE_STRING))
+            using (var connection = new SQLiteConnection(READ_DATABASE_STRING))
             {
+                connection.Open();
+                string sql = $"SELECT ID, EQUIPMENT_ID FROM RegimentNeedsTable ORDER BY ID, EQUIPMENT_ID ASC";
+
+                using (var command = new SQLiteCommand(connection))
+                {
+                    command.CommandText = sql;
+
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        DataTable table = new DataTable();
+                        table.Load(reader);
+
+                        return table;
+                    }
+                }
+            }
+        }
+
+        public static DataTable GetEarliestEquipmentYears()
+        {
+            using (var connection = new SQLiteConnection(READ_DATABASE_STRING))
+            {
+                connection.Open();
+                string sql = @"SELECT REGIMENT_ID, MAX(YEAR) AS MAX_YEAR FROM (
+	                    SELECT RNT.ID AS REGIMENT_ID, ET.ARCHETYPE, MIN(ET.YEAR) AS YEAR
+	                    FROM RegimentNeedsTable RNT
+	                    LEFT JOIN EquipmentTable ET ON (ET.ARCHETYPE = RNT.EQUIPMENT_ID)
+	                    WHERE ET.IS_ARCHETYPE = 'False'
+	                    GROUP BY REGIMENT_ID, ET.ARCHETYPE
+	                    HAVING MIN(ET.YEAR) NOT NULL)
+                    GROUP BY REGIMENT_ID";
+
+                using (var command = new SQLiteCommand(connection))
+                {
+                    command.CommandText = sql;
+
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        DataTable table = new DataTable();
+                        table.Load(reader);
+
+                        return table;
+                    }
+                }
+            }
+        }
+
+        public static DataTable GetRegiments(string filter = null)
+        {
+            using (var connection = new SQLiteConnection(READ_DATABASE_STRING))
+            {
+                string sql = $@"SELECT DISTINCT
+	                RT.ID AS REGIMENT_ID, 
+	                LT.LOCALIZATION_VALUE AS REGIMENT_NAME, 
+	                RT.PRIORITY AS REGIMENT_PRIORITY, 
+	                ET.ID AS EQUIPMENT_ID,
+	                LTE.LOCALIZATION_VALUE AS EQUIPMENT_NAME,
+	                RT.MAX_STRENGTH AS HP, 
+	                RT.MAX_ORGANIZATION AS ORGANIZATION,
+	                ET.YEAR AS YEAR,
+	                ET.SOFT_ATTACK,
+	                ET.HARD_ATTACK,
+	                ET.BREAKTHROUGH,
+	                ET.DEFENSE,
+	                ET.AP_ATTACK AS PIERCING,
+	                ET.AIR_ATTACK,
+	                ET.ARMOR_VALUE AS ARMOR,
+	                ET.HARDNESS,
+	                RT.COMBAT_WIDTH AS COMBAT_WIDTH,
+	                ET.BUILD_COST_IC * RNT.NUMBER AS COST,
+	                ET.ARCHETYPE
+                FROM RegimentTable AS RT
+	                LEFT JOIN RegimentCategoriesTable AS RCT ON (RT.ID = RCT.ID)
+	                LEFT JOIN LocalizationTable AS LT ON (RT.ID = LT.LOCALIZATION_KEY)
+	                LEFT JOIN EquipmentTable AS ET ON (RNT.EQUIPMENT_ID = ET.ARCHETYPE)
+	                LEFT JOIN LocalizationTable AS LTE ON (ET.ID = LTE.LOCALIZATION_KEY)
+	                LEFT JOIN RegimentNeedsTable AS RNT ON (RT.ID = RNT.ID)
+                WHERE ET.IS_ARCHETYPE = 'False'
+                {(filter != null ? " AND RCT.CATEGORY = @category " : "")}
+                ORDER BY REGIMENT_ID, YEAR ASC";
 
                 connection.Open();
+
+                using (var command = new SQLiteCommand(connection))
+                {
+                    command.CommandText = sql;
+
+                    if (filter != null)
+                        command.Parameters.Add("@category", DbType.String).Value = filter;
+
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        DataTable dt = new DataTable();
+                        dt.Load(reader);
+
+                        return dt;
+                    }
+                }
             }
         }
     }

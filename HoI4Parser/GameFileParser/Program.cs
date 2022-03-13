@@ -24,6 +24,9 @@ namespace HoI4Parser
 
             // Finish
             Console.WriteLine("All files parsed and loaded");
+
+            // Write output
+            OutputService.GetTransformedRegiments();
         }
     }
 }
