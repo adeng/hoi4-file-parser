@@ -8,12 +8,20 @@ namespace HoI4Parser.Services
 {
     public static class FileService
     {
-        public static void WriteRegimentJSON(JObject results)
+        public static void WriteJSON(JObject results, string filename)
         {
-            if (File.Exists("regiments.json"))
-                File.Delete("regiments.json");
+            if (File.Exists(filename))
+                File.Delete(filename);
 
-            File.WriteAllText("regiments.json", results.ToString());
+            File.WriteAllText(filename, results.ToString());
+        }
+
+        public static void WriteJSON(JArray results, string filename)
+        {
+            if (File.Exists(filename))
+                File.Delete(filename);
+
+            File.WriteAllText(filename, results.ToString());
         }
     }
 }

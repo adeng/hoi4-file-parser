@@ -489,6 +489,62 @@ namespace HoI4Parser.Services
             }
         }
 
+        public static DataTable GetEquipment()
+        {
+            using(var connection = new SQLiteConnection(READ_DATABASE_STRING))
+            {
+                string sql = @"SELECT DISTINCT ARCHETYPE AS ARCHETYPE_ID, LTE.LOCALIZATION_VALUE AS ARCHETYPE_NAME, ID AS EQUIPMENT_ID, LT.LOCALIZATION_VALUE AS EQUIPMENT_NAME, YEAR, RELIABILITY, MAXIMUM_SPEED, DEFENSE, BREAKTHROUGH, SOFT_ATTACK, HARD_ATTACK, AP_ATTACK AS PIERCING, AIR_ATTACK, HARDNESS, FUEL_CONSUMPTION, BUILD_COST_IC AS COST
+                    FROM EquipmentTable AS ET
+                    LEFT JOIN LocalizationTable AS LT ON (ET.ID = LT.LOCALIZATION_KEY)
+                    LEFT JOIN LocalizationTable AS LTE ON (ET.ARCHETYPE = LTE.LOCALIZATION_KEY)
+                    WHERE IS_ARCHETYPE = 'False'
+                    ORDER BY ARCHETYPE_ID, EQUIPMENT_ID";
+
+                connection.Open();
+
+                using(var command = new SQLiteCommand(connection))
+                {
+                    command.CommandText = sql;
+
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        DataTable dt = new DataTable();
+                        dt.Load(reader);
+
+                        return dt;
+                    }
+                }
+            }
+        }
+
+        public static DataTable GetRegiments()
+        {
+            using(var connection = new SQLiteConnection(READ_DATABASE_STRING))
+            {
+                string sql = @"SELECT DISTINCT RT.ID AS REGIMENT_ID, LT.LOCALIZATION_VALUE AS REGIMENT_NAME, RT.PRIORITY, RNT.EQUIPMENT_ID AS ARCHETYPE_ID, LTE.LOCALIZATION_VALUE AS ARCHETYPE_NAME, RNT.NUMBER, RT.TYPE, RT.SAME_SUPPORT_TYPE
+                    FROM RegimentTable RT
+                    LEFT JOIN RegimentNeedsTable RNT ON (RT.ID = RNT.ID)
+                    LEFT JOIN LocalizationTable LT ON (LT.LOCALIZATION_KEY = RT.ID)
+                    LEFT JOIN LocalizationTable LTE ON (LTE.LOCALIZATION_KEY = RNT.EQUIPMENT_ID)
+                    ORDER BY REGIMENT_ID, ARCHETYPE_ID";
+
+                connection.Open();
+
+                using(var command = new SQLiteCommand(connection))
+                {
+                    command.CommandText = sql;
+
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        DataTable dt = new DataTable();
+                        dt.Load(reader);
+
+                        return dt;
+                    }
+                }
+            }
+        }
+
         public static DataTable GetEarliestEquipmentYears()
         {
             using (var connection = new SQLiteConnection(READ_DATABASE_STRING))
@@ -518,7 +574,7 @@ namespace HoI4Parser.Services
             }
         }
 
-        public static DataTable GetRegiments(string filter = null)
+        public static DataTable GetCalculatedRegiments(string filter = null)
         {
             using (var connection = new SQLiteConnection(READ_DATABASE_STRING))
             {

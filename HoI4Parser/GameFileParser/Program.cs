@@ -27,6 +27,11 @@ namespace HoI4Parser
 
             // Write output
             OutputService.GetTransformedRegiments();
+            OutputService.GetRegiments();
+            OutputService.GetEquipment();
+
+            // Finish
+            Console.WriteLine("All output JSONs transformed and generated");
         }
     }
 }

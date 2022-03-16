@@ -15,7 +15,7 @@ namespace HoI4Parser.Services
         public static void GetTransformedRegiments()
         {
             DataTable needs = DataService.GetRegimentNeeds();
-            DataTable regiments = DataService.GetRegiments();
+            DataTable regiments = DataService.GetCalculatedRegiments();
 
             Dictionary<int, Dictionary<string, RegimentStatistics>> regimentsByYear = new Dictionary<int, Dictionary<string, RegimentStatistics>>();
 
@@ -100,18 +100,112 @@ namespace HoI4Parser.Services
             }
 
             JObject obj = JObject.FromObject(regimentsByYear);
-            //foreach(var pair in regimentsByYear)
-            //{
-            //    JObject stats = new JObject();
-            //    foreach(var regiment in pair.Value)
-            //    {
-            //        stats.Add(regiment.Key, JObject.FromObject(regiment.Value));
-            //    }
+            FileService.WriteJSON(obj, "transformed_regiments.json");
+        }
 
-            //    obj.Add(new JProperty(pair.Key.ToString(), stats));
-            //}
+        public static void GetRegiments()
+        {
+            DataTable regiments = DataService.GetRegiments();
+            JArray results = new JArray();
+            JObject current = new JObject();
+            JArray equipment = new JArray();
 
-            FileService.WriteRegimentJSON(obj);
+            string currentRegiment = "";
+
+            foreach(DataRow row in regiments.AsEnumerable())
+            {
+                if((string)row[0] != currentRegiment)
+                {
+                    // Create and push JObject
+                    if(currentRegiment != "")
+                    {
+                        current.Add(new JProperty("equipment", equipment));
+                        results.Add(current);
+                        equipment.Clear();
+                    }
+
+                    current = JObject.FromObject(new
+                    {
+                        regiment_id = (string)row[0],
+                        regiment_name = (string)(row[1].GetType() == typeof(System.DBNull) ? "" : row[1]),
+                        priority = (long)row[2],
+                        type = (string)row[6],
+                        same_support_type = (string)row[7]
+                    });
+
+                    currentRegiment = (string)row[0];
+                }
+
+                equipment.Add(JObject.FromObject(new
+                {
+                    archetype_id = (string)row[3],
+                    archetype_name = (string)row[4],
+                    number = (long)row[5]
+                }));
+            }
+
+            current.Add(new JProperty("equipment", equipment));
+            results.Add(current);
+
+            FileService.WriteJSON(results, "regiments.json");
+        }
+
+        public static void GetEquipment()
+        {
+            DataTable equipment = DataService.GetEquipment();
+            JArray results = new JArray();
+            JArray matches = new JArray();
+            JObject current = new JObject();
+
+            string currentArchetype = "";
+
+            foreach(DataRow row in equipment.AsEnumerable())
+            {
+                if ((string)row[0] != currentArchetype)
+                {
+                    // Create and push JObject
+                    if (currentArchetype != "")
+                    {
+                        current.Add(new JProperty("equipment", matches));
+                        results.Add(current);
+                        matches.Clear();
+                    }
+
+                    current = JObject.FromObject(new
+                    {
+                        archetype_id = (string)row[0],
+                        archetype_name = (string)row[1]
+                    });
+
+                    currentArchetype = (string)row[0];
+                }
+
+                JObject equip = JObject.FromObject(new
+                {
+                    equipment_id = (string)row[2],
+                    equipment_name = (string)row[3],
+                    year = (long)row[4],
+                    reliability = (double)row[5],
+                    max_speed = (double)row[6],
+                    defense = (double)row[7],
+                    breakthrough = (double)row[8],
+                    soft_attack = (double)row[9],
+                    hard_attack = (double)row[10],
+                    piercing = (double)row[11],
+                    air_attack = (double)row[12],
+                    hardness = (double)row[13],
+                    fuel_consumption = (double)row[14],
+                    cost = (double)row[15]
+                });
+
+                if(!matches.Contains(equip))
+                    matches.Add(equip);
+            }
+
+            current.Add(new JProperty("equipment", matches));
+            results.Add(current);
+
+            FileService.WriteJSON(results, "equipment.json");
         }
     }
 }
