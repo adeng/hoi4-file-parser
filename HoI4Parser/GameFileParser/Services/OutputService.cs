@@ -136,12 +136,15 @@ namespace HoI4Parser.Services
                     currentRegiment = (string)row[0];
                 }
 
-                equipment.Add(JObject.FromObject(new
+                JObject need = JObject.FromObject(new
                 {
                     archetype_id = (string)row[3],
                     archetype_name = (string)row[4],
                     number = (long)row[5]
-                }));
+                });
+
+                if(!equipment.Where(x => (string)x["archetype_id"] == (string)need["archetype_id"]).Any())
+                    equipment.Add(need);
             }
 
             current.Add(new JProperty("equipment", equipment));
@@ -198,8 +201,7 @@ namespace HoI4Parser.Services
                     cost = (double)row[15]
                 });
 
-                if(!matches.Contains(equip))
-                    matches.Add(equip);
+                matches.Add(equip);
             }
 
             current.Add(new JProperty("equipment", matches));
