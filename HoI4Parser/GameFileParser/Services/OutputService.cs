@@ -128,9 +128,12 @@ namespace HoI4Parser.Services
                     {
                         regiment_id = (string)row[0],
                         regiment_name = (string)(row[1].GetType() == typeof(System.DBNull) ? "" : row[1]),
-                        priority = (long)row[2],
-                        type = (string)row[6],
-                        same_support_type = (string)row[7]
+                        hp = (double)row[2],
+                        organization = (double)row[3],
+                        priority = (long)row[4],
+                        type = (string)row[8],
+                        same_support_type = (string)row[9],
+                        width = (long)row[10]
                     });
 
                     currentRegiment = (string)row[0];
@@ -138,9 +141,9 @@ namespace HoI4Parser.Services
 
                 JObject need = JObject.FromObject(new
                 {
-                    archetype_id = (string)row[3],
-                    archetype_name = (string)row[4],
-                    number = (long)row[5]
+                    archetype_id = (string)row[5],
+                    archetype_name = (string)row[6],
+                    number = (long)row[7]
                 });
 
                 if(!equipment.Where(x => (string)x["archetype_id"] == (string)need["archetype_id"]).Any())
@@ -198,7 +201,8 @@ namespace HoI4Parser.Services
                     air_attack = (double)row[12],
                     hardness = (double)row[13],
                     fuel_consumption = (double)row[14],
-                    cost = (double)row[15]
+                    cost = (double)row[15],
+                    armor = (double)row[16]
                 });
 
                 matches.Add(equip);
