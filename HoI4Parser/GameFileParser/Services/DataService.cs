@@ -517,6 +517,31 @@ namespace HoI4Parser.Services
             }
         }
 
+        public static DataTable GetTerrainModifiers()
+        {
+            using(var connection = new SQLiteConnection(READ_DATABASE_STRING))
+            {
+                string sql = @"SELECT MODIFIER_TYPE AS TERRAIN, ID AS REGIMENT_ID, ATTACK, DEFENSE, MOVEMENT
+                        FROM RegimentModifiersTable
+                        ORDER BY TERRAIN, ID ASC";
+
+                connection.Open();
+
+                using (var command = new SQLiteCommand(connection))
+                {
+                    command.CommandText = sql;
+
+                    using(SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        DataTable dt = new DataTable();
+                        dt.Load(reader);
+
+                        return dt;
+                    }
+                }
+            }
+        }
+
         public static DataTable GetRegiments()
         {
             using(var connection = new SQLiteConnection(READ_DATABASE_STRING))

@@ -29,6 +29,7 @@ namespace HoI4Parser
             OutputService.GetTransformedRegiments();
             OutputService.GetRegiments();
             OutputService.GetEquipment();
+            OutputService.GetTerrainModifiers();
 
             // Finish
             Console.WriteLine("All output JSONs transformed and generated");

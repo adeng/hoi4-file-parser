@@ -156,6 +156,49 @@ namespace HoI4Parser.Services
             FileService.WriteJSON(results, "regiments.json");
         }
 
+        public static void GetTerrainModifiers()
+        {
+            DataTable terrain = DataService.GetTerrainModifiers();
+            JArray results = new JArray();
+            JArray regiments = new JArray();
+            JObject current = new JObject();
+
+            string currentTerrain = "";
+
+            foreach(DataRow row in terrain.AsEnumerable())
+            {
+                if((string)row[0] != currentTerrain)
+                {
+                    if(currentTerrain != "")
+                    {
+                        current.Add(new JProperty("regiments", regiments));
+                        results.Add(current);
+                    }
+
+                    current = JObject.FromObject(new
+                    {
+                        terrain = (string)row[0]
+                    });
+
+                    regiments = new JArray();
+                    currentTerrain = (string)row[0];
+                }
+
+                regiments.Add(JObject.FromObject(new
+                {
+                    regiment_id = (string)row[1],
+                    attack = (double)row[2],
+                    defense = (double)row[3],
+                    movement = (double)row[4]
+                }));
+            }
+
+            current.Add(new JProperty("regiments", regiments));
+            results.Add(current);
+
+            FileService.WriteJSON(results, "terrain.json");
+        }
+
         public static void GetEquipment()
         {
             DataTable equipment = DataService.GetEquipment();
