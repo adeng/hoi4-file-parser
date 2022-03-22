@@ -517,6 +517,32 @@ namespace HoI4Parser.Services
             }
         }
 
+        public static DataTable GetCountries()
+        {
+            using (var connection = new SQLiteConnection(READ_DATABASE_STRING))
+            {
+                string sql = @"SELECT CT.TAG, CT.NAME AS COUNTRY_NAME, CT.COLOR, FIT.FILENAME AS FLAG_NAME, FIT.BITMAP, FIT.SIZE
+                    FROM CountryTable AS CT
+                    LEFT JOIN FlagImageTable AS FIT ON (FIT.TAG = CT.TAG)
+                    ORDER BY CT.TAG, FLAG_NAME, SIZE";
+
+                connection.Open();
+
+                using (var command = new SQLiteCommand(connection))
+                {
+                    command.CommandText = sql;
+
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        DataTable dt = new DataTable();
+                        dt.Load(reader);
+
+                        return dt;
+                    }
+                }
+            }
+        }
+
         public static DataTable GetTerrainModifiers()
         {
             using(var connection = new SQLiteConnection(READ_DATABASE_STRING))

@@ -119,7 +119,7 @@ namespace HoI4Parser.Services
                     // Create and push JObject
                     if(currentRegiment != "")
                     {
-                        current.Add(new JProperty("equipment", equipment));
+                        current.Add(new JProperty("equipment", (JArray)equipment.DeepClone()));
                         results.Add(current);
                         equipment.Clear();
                     }
@@ -150,7 +150,7 @@ namespace HoI4Parser.Services
                     equipment.Add(need);
             }
 
-            current.Add(new JProperty("equipment", equipment));
+            current.Add(new JProperty("equipment", (JArray)equipment.DeepClone()));
             results.Add(current);
 
             FileService.WriteJSON(results, "regiments.json");
@@ -171,7 +171,7 @@ namespace HoI4Parser.Services
                 {
                     if(currentTerrain != "")
                     {
-                        current.Add(new JProperty("regiments", regiments));
+                        current.Add(new JProperty("regiments", (JArray)regiments.DeepClone()));
                         results.Add(current);
                     }
 
@@ -193,10 +193,53 @@ namespace HoI4Parser.Services
                 }));
             }
 
-            current.Add(new JProperty("regiments", regiments));
+            current.Add(new JProperty("regiments", (JArray)regiments.DeepClone()));
             results.Add(current);
 
             FileService.WriteJSON(results, "terrain.json");
+        }
+
+        public static void GetCountries()
+        {
+            DataTable countries = DataService.GetCountries();
+            JArray results = new JArray();
+            JArray flags = new JArray();
+            JObject current = new JObject();
+
+            string currentCountry = "";
+
+            foreach(DataRow row in countries.AsEnumerable())
+            {
+                if((string)row[0] != currentCountry)
+                {
+                    if(currentCountry != "")
+                    {
+                        current.Add(new JProperty("flags", (JArray)flags.DeepClone()));
+                        results.Add(current);
+                        flags.Clear();
+                    }
+
+                    current = JObject.FromObject(new
+                    {
+                        tag = (string)row[0],
+                        country_name = (string)row[1],
+                        color = (string)row[2]
+                    });
+                    currentCountry = (string)row[0];
+                }
+
+                flags.Add(JObject.FromObject(new
+                {
+                    flag_name = (string)row[3],
+                    bitmap = (string)row[4],
+                    size = (string)row[5]
+                }));
+            }
+
+            current.Add(new JProperty("flags", (JArray)flags.DeepClone()));
+            results.Add(current);
+
+            FileService.WriteJSON(results, "countries.json");
         }
 
         public static void GetEquipment()
@@ -215,7 +258,7 @@ namespace HoI4Parser.Services
                     // Create and push JObject
                     if (currentArchetype != "")
                     {
-                        current.Add(new JProperty("equipment", matches));
+                        current.Add(new JProperty("equipment", (JArray)matches.DeepClone()));
                         results.Add(current);
                         matches.Clear();
                     }
@@ -251,7 +294,7 @@ namespace HoI4Parser.Services
                 matches.Add(equip);
             }
 
-            current.Add(new JProperty("equipment", matches));
+            current.Add(new JProperty("equipment", (JArray)matches.DeepClone()));
             results.Add(current);
 
             FileService.WriteJSON(results, "equipment.json");
