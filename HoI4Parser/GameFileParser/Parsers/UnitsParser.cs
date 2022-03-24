@@ -76,10 +76,25 @@ namespace HoI4Parser.Parsers
                     RegimentFamily file = ParadoxParser.Parse(fs, new RegimentFamily());
                     DataService.WriteRegiment(file);
 
-                    for(int j = file.RegimentList.Count - 1; j >= 0; j--)
+                    for (int j = file.RegimentList.Count - 1; j >= 0; j--)
                     {
                         DataService.RegimentDictionary.Add(file.RegimentList[j].ID, file.RegimentList[j]);
                     }
+                }
+            }
+        }
+
+        public static void LoadTerrain(string path)
+        {
+            string[] files = Directory.GetFiles(path, "*.txt", SearchOption.TopDirectoryOnly);
+
+            for (int i = files.Length - 1; i >= 0; i--)
+            {
+                // Iterate over equipment
+                using (FileStream fs = new FileStream(files[i], FileMode.Open))
+                {
+                    Console.WriteLine(files[i]);
+                    TerrainShell file = ParadoxParser.Parse(fs, new TerrainShell());
                 }
             }
         }

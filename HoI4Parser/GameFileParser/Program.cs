@@ -15,6 +15,7 @@ namespace HoI4Parser
 
             UnitsParser.LoadEquipment(filepath + @"\common\units\equipment");
             UnitsParser.LoadRegiments(filepath + @"\common\units");
+            UnitsParser.LoadTerrain(filepath + @"\common\terrain");
             CountryParser.LoadCountryTags(filepath + @"\common\country_tags");
             LocalizationParser.LoadLocalizationFolder(filepath + @"\localisation\english");
             CountryParser.LoadAIStrategies(filepath + @"\common\ai_strategy_plans");
